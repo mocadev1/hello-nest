@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat.dto';
 
 @Controller('cats') // The string is a route path prefix
@@ -15,9 +24,22 @@ export class CatsController {
     return 'This action adds a new cat';
   }
   @Get()
-  /** We can access the request object of the underlying platform (Express by
-   * default) adding the @Req() decorator */
-  findAll(@Req() request: Request): string {
-    return 'This action returns all cats';
+  findAll(@Query() query: ListAllEntities) {
+    return `This action returns all cats (limit: ${query.limit} items)`;
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return `This action return a #${id} cat`;
+  }
+
+  @Put(':id')
+  update(@Param('id') id: string, @Body() updateCatDto: UpdateCatDto) {
+    return `This action updates a #${id} cat`;
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return `This action removes a #${id} cat`;
   }
 }
