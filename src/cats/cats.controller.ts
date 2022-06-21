@@ -9,9 +9,17 @@ import {
   Query,
 } from '@nestjs/common';
 import { CreateCatDto } from './dto/create-cat.dto';
+import { CatsService } from './cats.service';
+import { Cat } from './interfaces/cat.interface';
 
 @Controller('cats') // The string is a route path prefix
 export class CatsController {
+
+  /** The CatsService is injected through the class constructor. The `private`
+   * syntax shorthand allow us to bot both declare and initilize the catsService
+   * member immediately in the same location.
+   */
+  constructor(private catsService: CatsService) {}
   @Post()
   /**
    * Using the @Body() decorator we can accept any client params.
@@ -21,11 +29,12 @@ export class CatsController {
    * at runtime.
    */
   async create(@Body() createCatDto: CreateCatDto) {
-    return 'This action adds a new cat';
+    this.catsService.create(createCatDto);
   }
+
   @Get()
-  findAll(@Query() query: ListAllEntities) {
-    return `This action returns all cats (limit: ${query.limit} items)`;
+  async findAll(): Promise<Cat[]> {
+    return this.catsService.findAll();
   }
 
   @Get(':id')
